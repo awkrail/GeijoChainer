@@ -1,6 +1,10 @@
 images
 face_images
+reserve
 af_face_images
+af_face_*
+images.*
 .cut_out.py.swp
 .DS_Store
-
+.idea
+.idea/vcs.xml

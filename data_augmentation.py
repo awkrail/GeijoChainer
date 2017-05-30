@@ -11,7 +11,9 @@ import random
     TODO: クラスをつくってディレクトリごとに管理すればokでは
 """
 
+
 class Augmentation(object):
+
     def __init__(self, directory, fnames, exts):
         self.directory = directory
         self.fnames = fnames
@@ -20,14 +22,11 @@ class Augmentation(object):
     # 保存してflipしたものも保存する
     def flip(self):
         for fname, ext in zip(self.fnames, self.exts):
-            img = cv2.imread('face_images/' + self.directory + '/' + fname + \
-                    ext)
+            img = cv2.imread('face_images/' + self.directory + '/' + fname + ext)
             flipped_img = cv2.flip(img, 1)
             # import ipdb; ipdb.set_trace()
-            cv2.imwrite('af_face_images/' + self.directory + '/' + \
-                fname + ext, img)
-            cv2.imwrite('af_face_images/' + self.directory + '/' + \
-                fname + '_yAxis' + ext, flipped_img)
+            cv2.imwrite('af_face_images/' + self.directory + '/' + fname + ext, img)
+            cv2.imwrite('af_face_images/' + self.directory + '/' + fname + '_yAxis' + ext, flipped_img)
     
     def affine(self):
         size = (75, 75)
@@ -43,7 +42,6 @@ class Augmentation(object):
             [np.cos(rad), -1 * np.sin(rad), 0],
             [np.sin(rad), np.cos(rad), 0]]) for rad in rads]
         
-        i = 0
         for fname, ext in zip(self.fnames, self.exts):
             img = cv2.imread('face_images/' + self.directory + '/' + fname + \
                     ext)
@@ -58,6 +56,7 @@ class Augmentation(object):
                 cv2.imwrite('af_face_images/' + self.directory + '/' + \
                     fname + '_yAxis_afn%d' % i + ext, flip_affine_img)
 
+
 def main():
     directories = os.listdir('face_images')
     professors = []
@@ -65,18 +64,20 @@ def main():
         if '.DS_Store' in directory:
             continue
         paths = [get_path(name) for name in os.listdir('face_images/' + directory + '/')
-            if not '.DS_Store' in directory]
+            if not '.DS_Store' in directory and not '.DS_Store' in name]
         exts = [get_ext(name) for name in os.listdir('face_images/' + directory + '/')
-            if not '.DS_Store' in directory]
+            if not '.DS_Store' in directory and not '.DS_Store' in name]
         professors.append(Augmentation(directory, paths, exts))
 
     for professor in professors:
         professor.flip()
         professor.affine()
 
+
 def get_ext(path):
     _, ext = os.path.splitext(path)
     return ext
+
 
 def get_path(path):
     name, _ = os.path.splitext(path)
