@@ -143,4 +143,4 @@ trainer.extend(extensions.ProgressBar())
 
 trainer.run()
 
-serializers.save_npz('geijo_result', model)
+serializers.save_npz('geijo_result.npz', model)
