@@ -4,6 +4,7 @@ reserve
 af_face_images
 af_face_*
 images.*
+classmates*
 .cut_out.py.swp
 .DS_Store
 .idea
