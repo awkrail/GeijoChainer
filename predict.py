@@ -4,7 +4,7 @@ import os
 import chainer
 import chainer.functions as F
 import chainer.links as L
-from chainer import serializers
+import pandas as pd
 
 faceCascade = cv2.CascadeClassifier("/Users/nishimurataichi/.pyenv/versions/anaconda3-4.1.0/pkgs/opencv3-3.1.0-py35_0/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml")
 
@@ -36,7 +36,7 @@ def load_classmates():
         if '.DS_Store' in img_path:
             continue
         img = cv2.imread('classmates_face/' + img_path)
-        yield img
+        yield img_path, img
 
 
 def img2numpy(fixed_dst):
@@ -84,15 +84,49 @@ class SimpleAlex(chainer.Chain):
 
         return h
 
+professors = {
+        0: 'ito',
+        1: 'inamura',
+        2: 'ushiama',
+        3: 'kimu',
+        4: 'takagi',
+        5: 'ueoka',
+        6: 'oshima',
+        7: 'tomotani',
+        8: 'tsuruno',
+        9: 'fuyuno',
+        10: 'fujihara',
+        11: 'tomimatsu'
+}
+
 
 # cut_out_face()
 if __name__ == '__main__':
-    for img in load_classmates():
-        img = img2numpy(img)
-        model = L.Classifier(SimpleAlex())
-        chainer.serializers.load_npz('geijo_result.npz', model)
+    image_names = []
+    professor_numbers = []
 
-        y = model(img, 0)
+    for img_path, img in load_classmates():
+        img = img2numpy(img)
+        model = SimpleAlex()
+        chainer.serializers.load_npz('geijo_result.npz', model)
+        y = model(img)
+        y = np.argmax(F.softmax(y).data)
+
         print(y)
+
+        image_names.append(img_path)
+        professor_numbers.append(professors[y])
+
+    all_data = [image_names, professor_numbers]
+
+    result = pd.DataFrame(all_data)
+    result = result.T
+    result.columns = ['学生名', '研究室名']
+    result.to_csv('your_fate.csv', index=False)
+
+
+
+
+
 
 
